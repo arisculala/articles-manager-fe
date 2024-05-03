@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../header') %>
+  <body>
+    <%- include('../navigation')  %>
+
+    <%- include('../message')  %>
+
+    <section class="section">
+      <div class="container">
+          <div class="columns is-centered">
+              <div class="column is-half">
+                <div class="form-container">
+                  <h1 class="title has-text-centered">Login</h1>
+                  <form action="/login" method="POST" onsubmit="return validateForm()">
+                      <div class="field">
+                          <label class="label">Email</label>
+                          <div class="control">
+                              <input class="input" type="email" placeholder="Enter your email" name="email" id="email">
+                              <p id="emailError" class="help is-danger"></p>
+                          </div>
+                      </div>
+                      <div class="field">
+                          <label class="label">Password</label>
+                          <div class="control">
+                              <input class="input" type="password" placeholder="Enter your password" name="password" id="password">
+                              <p id="passwordError" class="help is-danger"></p>
+                          </div>
+                      </div>
+                      <div class="field">
+                          <div class="control">
+                              <button class="button is-primary" type="submit">Login</button>
+                          </div>
+                      </div>
+                  </form>
+                  <p class="has-text-centered">Don't have an account? <a href="/register">Register</a></p>
+                </div>
+              </div>
+          </div>
+      </div>
+    </section>
+
+    <%- include('../footer') %>
+
+    <script>
+      function validateForm() {
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const emailError = document.getElementById('emailError');
+        const passwordError = document.getElementById('passwordError');
+
+        // Reset error messages and remove is-danger class
+        emailError.textContent = '';
+        passwordError.textContent = '';
+        document.getElementById('email').classList.remove('is-danger');
+        document.getElementById('password').classList.remove('is-danger');
+
+        let isValid = true;
+
+        // Validate email
+        if (!email) {
+          emailError.textContent = 'Email is required';
+          document.getElementById('email').classList.add('is-danger');
+          isValid = false;
+        } else if (!isValidEmail(email)) {
+          emailError.textContent = 'Please enter a valid email address';
+          document.getElementById('email').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate password
+        if (!password) {
+          passwordError.textContent = 'Password is required';
+          document.getElementById('password').classList.add('is-danger');
+          isValid = false;
+        }
+
+        return isValid;
+      }
+
+      // Email validation function
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+    </script>
+
+  </body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<%- include('../header') %>
+
+<body>
+
+  <%- include('../navigation')  %>
+
+  <%
+  function removeHtmlTags(content) {
+      // Remove HTML tags from content
+      return content.replace(/<[^>]*>?/gm, '');
+  }
+  %>
+
+  <!-- Article Heading Section -->
+  <section class="hero is-success is-light">
+      <div class="hero-body">
+          <p class="title">
+              Welcome to Articles&#174;
+          </p>
+          <p class="subtitle">
+              Explore Articles shared by people
+          </p>
+      </div>
+  </section>
+
+  <!-- Article Modal -->
+  <div id="articleModal" class="modal">
+    <div class="modal-background"></div>
+    <div class="modal-content" id="modalArticleContent"></div>
+    <button class="modal-close is-large" aria-label="close" onclick="closeArticleModal()"></button>
+  </div>
+  <script>
+    function openArticleModal(id) {
+      var modal = document.getElementById("myModal");
+      fetch(`/articles/${id}`)
+      .then(response => response.text())
+      .then(data => {
+        document.getElementById("modalArticleContent").innerHTML = data;
+        document.getElementById('articleModal').classList.add('is-active');
+      })
+      .catch(error => {
+        console.error('Error loading article modal:', error);
+      });
+    }
+
+    function closeArticleModal() {
+      document.getElementById('articleModal').classList.remove('is-active');
+    }
+  </script>
+
+  <% if (articles.length > 0) { %>
+    <!-- Search Articles Section -->
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-half">
+            <!-- Search Bar -->
+            <form action="/articles" method="GET">
+              <div class="field has-addons">
+                <div class="control is-expanded">
+                  <input class="input" type="text" name="search" placeholder="Search articles" value="<%= search || '' %>" />
+                  <input type="hidden" name="page" value="<%= pagination.page %>"/>
+                  <input type="hidden" name="limit" value="<%= pagination.perPage %>"/>
+                </div>
+                <div class="control">
+                  <button type="submit" class="button is-info">Search</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      // javacript to trigger the search after 4 characters /disabled for now
+      // document.addEventListener('DOMContentLoaded', function() {
+      //   const searchInput = document.getElementById('searchInput');
+      //   const searchForm = document.getElementById('searchForm');
+      //   searchInput.addEventListener('input', function(event) {
+      //     const searchValue = event.target.value.trim();
+      //     if (searchValue.length >= 4) {
+      //       searchForm.submit();
+      //     }
+      //   });
+      // });
+    </script>
+
+    <!-- List of Articles Section -->
+    <section class="section">
+        <div class="container">
+            <div class="columns is-multiline">
+                <% articles.forEach(article => { %>
+                    <div class="column is-one-third">
+                        <div class="card">
+                            <div class="card-content">
+                              <div class="media">
+                                <div class="media-left">
+                                  <figure class="image is-48x48">
+                                    <img src="<%=article.image %>" />
+                                  </figure>
+                                </div>
+                                <div class="media-content">
+                                  <p class="title is-4"><%= article.headline %></p>
+                                  <p class="subtitle is-6">By <%= article.author.firstName %> <%= article.author.lastName %> | <%= new Date(article.updatedAt).toDateString() %> <%= new Date(article.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true }) %></p>
+                                </div>
+                              </div>
+                              <div class="content">
+                                <%= removeHtmlTags(article.content.substring(0, 100)) %>... 
+                                <a href="#" onclick="openArticleModal('<%= article.id %>')" >Read more</a>
+                              </div>
+                            </div>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </section>
+
+    <!--  Section -->
+    <section class="section">
+      <nav class="pagination is-centered" role="navigation" aria-label="pagination">
+        <ul class="pagination-list">
+          <% if (pagination.page > 1) { %>
+            <li><a class="pagination-link" href="javascript:void(0)" onclick="navigatePage(1)" aria-label="Goto page 1">&lt;&lt;</a></li>
+            <li><a class="pagination-link" href="javascript:void(0)" onclick="navigatePage(<%= pagination.page - 1 %>)" aria-label="Previous">&lt;</a></li>
+          <% } %>
+          <% for (let i = 1; i <= pagination.totalPages; i++) { %>
+            <li>
+              <a class="pagination-link <%= i === parseInt(pagination.page) ? 'is-current' : '' %>"
+                href="javascript:void(0)"
+                onclick="navigatePage(<%= i %>)"
+                aria-label="Page <%= i %>"
+                aria-current="<%= i === parseInt(pagination.page) ? 'page' : '' %>">
+                <%= i %>
+              </a>
+            </li>
+          <% } %>
+          <% if (pagination.page < pagination.totalPages) { %>
+            <li><a class="pagination-link" href="javascript:void(0)" onclick="navigatePage(<%= pagination.page + 1 %>)" aria-label="Next">&gt;</a></li>
+            <li><a class="pagination-link" href="javascript:void(0)" onclick="navigatePage(<%= pagination.totalPages %>)" aria-label="Goto page <%= pagination.totalPages %>">&gt;&gt;</a></li>
+          <% } %>
+        </ul>
+      </nav>
+      <div class="content has-text-centered">
+        <% if (pagination.totalItems > 0) { %>
+          <p>Displaying <%= (pagination.page - 1) * pagination.perPage + 1 %> - <%= Math.min(pagination.page * pagination.perPage, pagination.totalItems) %> of <%= pagination.totalItems %> total records.</p>
+        <% } else { %>
+          <p>No records found.</p>
+        <% } %>
+      </div>
+    </section>
+    <script>
+      // trigger the search button to submit when pagination is clicked
+      function navigatePage(page) {
+        document.querySelector('input[name="page"]').value = page;
+        document.querySelector('form').submit();
+      }
+    </script>
+  <% } else { %>
+    <section class="section">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-half has-text-centered">
+            <p class="is-size-4">No articles found.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  <% } %>
+
+  <%- include('../footer') %>
+</body>
+</html>

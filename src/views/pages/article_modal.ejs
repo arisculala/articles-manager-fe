@@ -1,0 +1,20 @@
+<div class="card article">
+  <div class="card-content">
+    <% if (article.image) { %>
+      <div class="media">
+        <div class="media-center">
+          <img src="<%= article.image %>" class="author-image" alt="Placeholder image">
+        </div>
+        <div class="media-content has-text-centered">
+          <p class="title article-title"><%= article.headline %></p>
+          <p class="subtitle is-6 article-subtitle">
+            by <%= article.author.firstName %> <%= article.author.lastName %> on <%= new Date(article.updatedAt).toLocaleDateString('en-US', { month: 'short', day: '2-digit' }).toUpperCase() %>, <%= new Date(article.updatedAt).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }).toUpperCase() %>
+          </p>
+        </div>
+      </div>
+    <% } %>
+    <div class="content article-body">
+      <%- article.content %>
+    </div>
+  </div>
+</div>

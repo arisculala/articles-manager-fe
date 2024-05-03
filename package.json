@@ -1,0 +1,28 @@
+{
+  "name": "articles-manager-fe",
+  "version": "0.0.1",
+  "description": "Front-end to manage articles-manager API Microservice",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "format": "prettier --write ."
+  },
+  "keywords": [],
+  "author": "arisculala",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "winston": "^3.13.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0",
+    "prettier": "^3.2.5"
+  }
+}

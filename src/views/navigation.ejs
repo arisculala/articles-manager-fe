@@ -1,0 +1,65 @@
+<header>
+  <nav class="navbar is-light" role="navigation" aria-label="main navigation">
+    <!-- Navbar Brand containing the Heading -->
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <h1>Articles&#174;</h1>
+      </a>
+      <!-- Burger Icons for responsive navbar -->
+      <a role="button"
+        class="navbar-burger"
+        aria-label="menu"
+        aria-expanded="false"
+        data-target="navbarBasicExample"
+      >
+        <span aria-hidden="true">Home</span>
+        <span aria-hidden="true">Profile</span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+
+    <!-- Navbar Menu containing a list of items -->
+    <div id="navbarBasicExample" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="/"> Home </a>
+        <% if (user) { %>
+          <a class="navbar-item" href="/my-articles"> My Articles </a>
+        <% } %>
+      </div>
+
+      <!-- Navbar End containing Sign Up and Sign In Buttons / Profile dropdown menu -->
+      <div class="navbar-end">
+        <!-- Only display the following if the user is logged in -->
+        <% if (user) { %>
+          <div class="navbar-item has-dropdown is-hoverable">
+            <a class="navbar-link">
+              <img src="https://picsum.photos/200/300" alt="Profile Image" class="profile-image" />&nbsp;
+              <%= user.firstName %> <%= user.lastName %>
+            </a>
+            <div class="navbar-dropdown">
+              <a class="navbar-item" href="/profile">
+                Profile
+              </a>
+              <a class="navbar-item" href="/my-articles">
+                My Articles
+              </a>
+              <hr class="navbar-divider">
+              <a class="navbar-item" href="/logout">
+                Logout
+              </a>
+            </div>
+          </div>
+        <% } else { %>
+          <div class="navbar-item">
+            <div class="buttons">
+              <a class="button is-success" href="/register">
+                <strong> Sign up </strong>
+              </a>
+              <a class="button is-light" href="/login"> Log in </a>
+            </div>
+          </div>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+</header>

@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../header') %>
+  <body>
+    <%- include('../navigation')  %>
+
+    <%- include('../message')  %>
+
+    <section class="section">
+      <div class="container">
+          <div class="columns is-centered">
+              <div class="column is-half">
+                <div class="form-container">
+                  <h1 class="title has-text-centered">Sign up</h1>
+                  <form id="registerForm" action="/register" method="POST" onsubmit="return validateForm()">
+                      <div class="field">
+                          <label class="label">First Name</label>
+                          <div class="control">
+                              <input class="input" type="text" placeholder="Enter your first name" name="firstName" id="firstName">
+                              <p id="firstNameError" class="help is-danger"></p>
+                          </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">Last Name</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Enter your last name" name="lastName" id="lastName">
+                            <p id="lastNameError" class="help is-danger"></p>
+                        </div>
+                      </div>
+                      <div class="field">
+                          <label class="label">Email</label>
+                          <div class="control">
+                              <input class="input" type="email" placeholder="Enter your email" name="email" id="email">
+                              <p id="emailError" class="help is-danger"></p>
+                          </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">Phone Number</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Enter your phone number" name="phoneNumber" id="phoneNumber">
+                            <p id="phoneNumberError" class="help is-danger"></p>
+                        </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">Profile Image</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Enter profile image URL" name="profileImage" id="profileImage">
+                            <p id="profileImageError" class="help is-danger"></p>
+                        </div>
+                      </div>
+                      <div class="field">
+                          <label class="label">Password</label>
+                          <div class="control">
+                              <input class="input" type="password" placeholder="Enter your password" name="password" id="password">
+                              <p id="passwordError" class="help is-danger"></p>
+                          </div>
+                      </div>
+                      <div class="field">
+                        <label class="label">Re-enter Password</label>
+                        <div class="control">
+                            <input class="input" type="password" placeholder="Enter your password" name="reenterPassword" id="reenterPassword">
+                            <p id="reenterPasswordError" class="help is-danger"></p>
+                        </div>
+                    </div>
+                      <div class="field">
+                          <div class="control">
+                              <button class="button is-primary" type="submit">Register</button>
+                          </div>
+                      </div>
+                  </form>
+                  <p class="has-text-centered">Already have an account? <a href="/login">Login</a></p>
+                </div>
+              </div>
+          </div>
+      </div>
+    </section>
+
+    <%- include('../footer') %>
+
+    <script>
+      function validateForm() {
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const profileImage = document.getElementById('profileImage').value;
+        const password = document.getElementById('password').value;
+        const reenterPassword = document.getElementById('reenterPassword').value;
+
+        const firstNameError = document.getElementById('firstNameError');
+        const lastNameError = document.getElementById('lastNameError');
+        const emailError = document.getElementById('emailError');
+        const phoneNumberError = document.getElementById('phoneNumberError');
+        const profileImageError = document.getElementById('profileImageError');
+        const passwordError = document.getElementById('passwordError');
+        const reenterPasswordError = document.getElementById('reenterPasswordError');
+
+        // Reset error messages and remove is-danger class
+        firstNameError.textContent = '';
+        lastNameError.textContent = '';
+        emailError.textContent = '';
+        phoneNumberError.textContent = '';
+        profileImageError.textContent = '';
+        passwordError.textContent = '';
+        reenterPasswordError.textContent = '';
+        document.getElementById('firstName').classList.remove('is-danger');
+        document.getElementById('lastName').classList.remove('is-danger');
+        document.getElementById('email').classList.remove('is-danger');
+        document.getElementById('phoneNumber').classList.remove('is-danger');
+        document.getElementById('profileImage').classList.remove('is-danger');
+        document.getElementById('password').classList.remove('is-danger');
+        document.getElementById('reenterPassword').classList.remove('is-danger');
+
+        let isValid = true;
+
+        // Validate firstName
+        if (!firstName) {
+          firstNameError.textContent = 'First name is required';
+          document.getElementById('firstName').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate lastName
+        if (!lastName) {
+          lastNameError.textContent = 'Last name is required';
+          document.getElementById('lastName').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate email
+        if (!email) {
+          emailError.textContent = 'Email is required';
+          document.getElementById('email').classList.add('is-danger');
+          isValid = false;
+        } else if (!isValidEmail(email)) {
+          emailError.textContent = 'Please enter a valid email address';
+          document.getElementById('email').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate password
+        if (!password) {
+          passwordError.textContent = 'Password is required';
+          document.getElementById('password').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate reenterPassword
+        if (!reenterPassword) {
+          reenterPasswordError.textContent = 'Re-enter password is required';
+          document.getElementById('reenterPassword').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate if password and reenter password same
+        if (password !== reenterPassword) {
+          reenterPasswordError.textContent = 'Re-enter password should match password';
+          document.getElementById('reenterPassword').classList.add('is-danger');
+          isValid = false;
+        }
+
+        return isValid;
+      }
+
+      // Email validation function
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+    </script>
+
+  </body>
+</html>
+

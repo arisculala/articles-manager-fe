@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <%- include('../header') %>
+  <body>
+    <%- include('../navigation')  %>
+
+    <%- include('../message')  %>
+  
+    <!-- Profile Section -->
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <!-- Non-Editable Profile Fields -->
+          <div class="column is-one-third">
+            <div class="card">
+              <div class="card-content">
+                <h3 class="title is-4">Profile</h3>
+                <hr class="is-divider">
+                <div class="field">
+                  <div class="control has-text-centered">
+                    <img src="<%= user.profileImage %>" alt="Profile Image">
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Name</label>
+                  <div class="control">
+                    <p><%= user.firstName %> <%= user.lastName %></p>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Email</label>
+                  <div class="control">
+                    <p><%= user.email %></p>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Phone Number</label>
+                  <div class="control">
+                    <p><%= user.phoneNumber %></p>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Username</label>
+                  <div class="control">
+                    <p><%= user.username %></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Editable Profile Fields -->
+          <div class="column">
+            <div class="card">
+              <div class="card-content">
+                <h3 class="title is-4">Edit Profile</h3>
+                <hr class="is-divider">
+                <form id="editProfileForm" action="/profile" method="POST" onsubmit="return validateProfileForm()">
+                  <div class="field">
+                    <label class="label">First Name</label>
+                    <div class="control">
+                        <input class="input" type="text" placeholder="Enter your first name" name="firstName" id="firstName" value="<%= user.firstName %>">
+                        <p id="firstNameError" class="help is-danger"></p>
+                    </div>
+                </div>
+                <div class="field">
+                  <label class="label">Last Name</label>
+                  <div class="control">
+                      <input class="input" type="text" placeholder="Enter your last name" name="lastName" id="lastName" value="<%= user.lastName %>">
+                      <p id="lastNameError" class="help is-danger"></p>
+                  </div>
+                </div>
+                <div class="field">
+                    <label class="label">Email</label>
+                    <div class="control">
+                        <input class="input" type="email" placeholder="Enter your email" name="email" id="email" value="<%= user.email %>">
+                        <p id="emailError" class="help is-danger"></p>
+                    </div>
+                </div>
+                <div class="field">
+                  <label class="label">Phone Number</label>
+                  <div class="control">
+                      <input class="input" type="text" placeholder="Enter your phone number" name="phoneNumber" id="phoneNumber" value="<%= user.phoneNumber %>">
+                      <p id="phoneNumberError" class="help is-danger"></p>
+                  </div>
+                </div>
+                <div class="field">
+                  <label class="label">Profile Image</label>
+                  <div class="control">
+                      <input class="input" type="text" placeholder="Enter profile image URL" name="profileImage" id="profileImage" value="<%= user.profileImage %>">
+                      <p id="profileImageError" class="help is-danger"></p>
+                  </div>
+                </div>
+                <div class="field is-grouped">
+                    <div class="control">
+                        <button class="button is-primary" type="submit">Save</button>
+                    </div>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Change Password Section -->
+    <section class="section">
+      <div class="container">
+        <div class="columns">
+          <div class="column">
+            <div class="card">
+              <div class="card-content">
+                <h3 class="title is-4">Change Password</h3>
+                <hr class="is-divider">
+                <form id="changePasswordForm" action="/profile/password" method="POST" onsubmit="return validatePasswordForm()">
+                  <div class="field">
+                    <label class="label">Current Password</label>
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Enter your current password" name="currentPassword" id="currentPassword" value="">
+                        <p id="currentPasswordError" class="help is-danger"></p>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">New Password</label>
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Enter your new password" name="newPassword" id="newPassword" value="">
+                        <p id="newPasswordError" class="help is-danger"></p>
+                    </div>
+                  </div>
+                  <div class="field">
+                    <label class="label">Re-enter New Password</label>
+                    <div class="control">
+                        <input class="input" type="password" placeholder="Re-enter your new password" name="reenterNewPassword" id="reenterNewPassword" value="">
+                        <p id="reenterNewPasswordError" class="help is-danger"></p>
+                    </div>
+                  </div>
+                  <div class="field is-grouped">
+                      <div class="control">
+                          <button class="button is-primary" type="submit">Save</button>
+                      </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <%- include('../footer') %>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const editProfileBtn = document.getElementById('editProfileBtn');
+        const cancelEditProfileBtn = document.getElementById('cancelEditProfileBtn');
+
+        const editableProfileSection = document.getElementById('editableProfileSection');
+        const nonEditableProfileSection = document.getElementById('nonEditableProfileSection');
+
+        // Add event listener to the Edit Profile button
+        editProfileBtn.addEventListener('click', () => {
+          editableProfileSection.style.display = 'block';
+          nonEditableProfileSection.style.display = 'none';
+        });
+
+        // Add event listener to the Cancel Edit Profile button
+        cancelEditProfileBtn.addEventListener('click', (event) => {
+          event.preventDefault(); // Prevent default form submission
+          editableProfileSection.style.display = 'none';
+          nonEditableProfileSection.style.display = 'block';
+        });
+      });
+
+      function validateProfileForm() {
+        const firstName = document.getElementById('firstName').value;
+        const lastName = document.getElementById('lastName').value;
+        const email = document.getElementById('email').value;
+        const phoneNumber = document.getElementById('phoneNumber').value;
+        const profileImage = document.getElementById('profileImage').value;
+
+        const firstNameError = document.getElementById('firstNameError');
+        const lastNameError = document.getElementById('lastNameError');
+        const emailError = document.getElementById('emailError');
+        const phoneNumberError = document.getElementById('phoneNumberError');
+        const profileImageError = document.getElementById('profileImageError');
+
+        // Reset error messages and remove is-danger class
+        firstNameError.textContent = '';
+        lastNameError.textContent = '';
+        emailError.textContent = '';
+        phoneNumberError.textContent = '';
+        profileImageError.textContent = '';
+        document.getElementById('firstName').classList.remove('is-danger');
+        document.getElementById('lastName').classList.remove('is-danger');
+        document.getElementById('email').classList.remove('is-danger');
+        document.getElementById('phoneNumber').classList.remove('is-danger');
+        document.getElementById('profileImage').classList.remove('is-danger');
+
+        let isValid = true;
+
+        // Validate firstName
+        if (!firstName) {
+          firstNameError.textContent = 'First name is required';
+          document.getElementById('firstName').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate lastName
+        if (!lastName) {
+          lastNameError.textContent = 'Last name is required';
+          document.getElementById('lastName').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate email
+        if (!email) {
+          emailError.textContent = 'Email is required';
+          document.getElementById('email').classList.add('is-danger');
+          isValid = false;
+        } else if (!isValidEmail(email)) {
+          emailError.textContent = 'Please enter a valid email address';
+          document.getElementById('email').classList.add('is-danger');
+          isValid = false;
+        }
+
+        return isValid;
+      }
+
+      // Email validation function
+      function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+      }
+
+      function validatePasswordForm() {
+        const currentPassword = document.getElementById('currentPassword').value;
+        const newPassword = document.getElementById('newPassword').value;
+        const reenterNewPassword = document.getElementById('reenterNewPassword').value;
+
+        const currentPasswordError = document.getElementById('currentPasswordError');
+        const newPasswordError = document.getElementById('newPasswordError');
+        const reenterNewPasswordError = document.getElementById('reenterNewPasswordError');
+
+        // Reset error messages and remove is-danger class
+        currentPasswordError.textContent = '';
+        newPasswordError.textContent = '';
+        emailError.textContent = '';
+        reenterNewPasswordError.textContent = '';
+        document.getElementById('currentPassword').classList.remove('is-danger');
+        document.getElementById('newPassword').classList.remove('is-danger');
+        document.getElementById('reenterNewPassword').classList.remove('is-danger');
+
+        let isValid = true;
+
+        // Validate currentPassword
+        if (!currentPassword) {
+          currentPasswordError.textContent = 'Current password is required';
+          document.getElementById('currentPassword').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate newPassword
+        if (!newPassword) {
+          newPasswordError.textContent = 'New password is required';
+          document.getElementById('newPassword').classList.add('is-danger');
+          isValid = false;
+        }
+
+        // Validate reenterNewPassword
+        if (!reenterNewPassword) {
+          reenterNewPasswordError.textContent = 'Re-enter new password is required';
+          document.getElementById('reenterNewPassword').classList.add('is-danger');
+          isValid = false;
+        }
+
+        if (newPassword !== reenterNewPassword) {
+          reenterNewPasswordError.textContent = 'Re-enter new password does not match new password';
+          document.getElementById('reenterNewPassword').classList.add('is-danger');
+          isValid = false;
+        }
+
+        return isValid;
+      }
+    </script>
+
+  </body>
+</html>
+
